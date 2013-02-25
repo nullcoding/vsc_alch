@@ -1,22 +1,45 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package alchhelper_draft2;
 
+import java.util.Observable;
 import javax.swing.ButtonGroup;
+import javax.swing.JPanel;
 
 /**
  *
- * @author jaska
+ * @author Jaska Börner
+ * @version 3 - dates 23 Feb 2013 25 Feb 2013
  */
-public class Lenapj extends javax.swing.JPanel {
+public class Lenapj extends JPanel {
+
+    public static final int ARMOR = 0;
+    public static final int WEAPONS = 1;
+    public static final int DHIDE = 2;
+    public static final int OTHER = 3;
+    public static final int BUY_NATURES = 4;
+    public static final int BUY_ESSENCE = 5;
+    public static final int APATHETIC = 6;
+    public int CURRENT_CATEGORY = 0;
+    private CategoryButtonsObservable cbo;
+    private ItemList ListDisplay;
 
     /**
-     * Creates new form Lenapj
+     * Creates new form Lenapj it's JPanel backwards and sounds vaguely Native
+     * American, no? modified to put button groups in with the generated code
+     * because NetBeans doesn't seem to like them very much or at least doesn't
+     * want to let them exist...
      */
     public Lenapj() {
         initComponents();
+        initGroups();
+
+        ArmorButton.setSelected(true);
+        cbo = new CategoryButtonsObservable();
+        ListDisplay = new ItemList(CURRENT_CATEGORY);
+        ListPane.setViewportView(ListDisplay);
+        cbo.addObserver(ListDisplay);
+    }
+
+    private void initGroups() {
         ButtonGroup categorygroup = new ButtonGroup();
         categorygroup.add(ArmorButton);
         categorygroup.add(WeaponButton);
@@ -46,8 +69,6 @@ public class Lenapj extends javax.swing.JPanel {
         BuyNatButton = new javax.swing.JRadioButton();
         BuyEssButton = new javax.swing.JRadioButton();
         DontCareButton = new javax.swing.JRadioButton();
-        ListPane = new javax.swing.JScrollPane();
-        List = new javax.swing.JList();
         jLabel3 = new javax.swing.JLabel();
         AlchValue = new javax.swing.JTextField();
         GEPrice = new javax.swing.JTextField();
@@ -72,6 +93,7 @@ public class Lenapj extends javax.swing.JPanel {
         BuyLimit = new javax.swing.JTextField();
         CalcTotalButton = new javax.swing.JButton();
         AboutButton = new javax.swing.JButton();
+        ListPane = new javax.swing.JScrollPane();
 
         jLabel1.setText("Category:");
 
@@ -125,14 +147,6 @@ public class Lenapj extends javax.swing.JPanel {
                 DontCareButtonActionPerformed(evt);
             }
         });
-
-        List.setBorder(javax.swing.BorderFactory.createTitledBorder("Items"));
-        List.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        ListPane.setViewportView(List);
 
         jLabel3.setText("High Alchemy Value:");
 
@@ -217,17 +231,16 @@ public class Lenapj extends javax.swing.JPanel {
                             .add(jLabel7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .add(EssPrice, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 130, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                     .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                .add(ListPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 336, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(layout.createSequentialGroup()
-                                    .add(jLabel10)
-                                    .add(18, 18, 18)
-                                    .add(SortSelect, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(layout.createSequentialGroup()
+                                .add(jLabel10)
+                                .add(18, 18, 18)
+                                .add(SortSelect, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 231, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                             .add(layout.createSequentialGroup()
                                 .add(UpdateButton)
                                 .add(1, 1, 1)
-                                .add(AboutButton)))
+                                .add(AboutButton))
+                            .add(ListPane))
                         .add(18, 18, 18)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
@@ -274,7 +287,7 @@ public class Lenapj extends javax.swing.JPanel {
                         .add(DhideButton)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(OtherButton)
-                        .add(24, 24, 24))
+                        .add(13, 13, 13))
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(layout.createSequentialGroup()
@@ -294,11 +307,11 @@ public class Lenapj extends javax.swing.JPanel {
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(DontCareButton)
                                 .add(12, 12, 12)))
-                        .add(47, 47, 47)))
+                        .add(36, 36, 36)))
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(ListPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 211, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(18, 18, 18)
+                        .add(ListPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 234, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jLabel10)
                             .add(SortSelect, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -307,6 +320,7 @@ public class Lenapj extends javax.swing.JPanel {
                             .add(UpdateButton)
                             .add(AboutButton)))
                     .add(layout.createSequentialGroup()
+                        .add(11, 11, 11)
                         .add(jLabel3)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(AlchValue, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -345,19 +359,23 @@ public class Lenapj extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ArmorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ArmorButtonActionPerformed
-        // TODO add your handling code here:
+        this.CURRENT_CATEGORY = ARMOR;
+        cbo.setCategory(CURRENT_CATEGORY);
     }//GEN-LAST:event_ArmorButtonActionPerformed
 
     private void OtherButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OtherButtonActionPerformed
-        // TODO add your handling code here:
+        this.CURRENT_CATEGORY = OTHER;
+        cbo.setCategory(CURRENT_CATEGORY);
     }//GEN-LAST:event_OtherButtonActionPerformed
 
     private void WeaponButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_WeaponButtonActionPerformed
-        // TODO add your handling code here:
+        this.CURRENT_CATEGORY = WEAPONS;
+        cbo.setCategory(CURRENT_CATEGORY);
     }//GEN-LAST:event_WeaponButtonActionPerformed
 
     private void DhideButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DhideButtonActionPerformed
-        // TODO add your handling code here:
+        this.CURRENT_CATEGORY = DHIDE;
+        cbo.setCategory(CURRENT_CATEGORY);
     }//GEN-LAST:event_DhideButtonActionPerformed
 
     private void BuyNatButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuyNatButtonActionPerformed
@@ -371,7 +389,6 @@ public class Lenapj extends javax.swing.JPanel {
     private void DontCareButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DontCareButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_DontCareButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AboutButton;
     private javax.swing.JTextField AlchAmount;
@@ -385,7 +402,6 @@ public class Lenapj extends javax.swing.JPanel {
     private javax.swing.JRadioButton DontCareButton;
     private javax.swing.JTextField EssPrice;
     private javax.swing.JTextField GEPrice;
-    private javax.swing.JList List;
     private javax.swing.JScrollPane ListPane;
     private javax.swing.JTextField NatPrice;
     private javax.swing.JRadioButton OtherButton;
@@ -409,4 +425,21 @@ public class Lenapj extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
+
+    class CategoryButtonsObservable extends Observable {
+
+        int categoryselected;
+
+        public CategoryButtonsObservable() {
+            System.out.println("Category Buttons Observable created.");
+        }
+
+        public void setCategory(int category) {
+            this.categoryselected = category;
+            System.out.println("Category changed to:" + categoryselected);
+            setChanged();
+            notifyObservers();
+            ListDisplay.changeModel(categoryselected);
+        }
+    }
 }
