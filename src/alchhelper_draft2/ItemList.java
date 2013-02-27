@@ -1,10 +1,14 @@
 package alchhelper_draft2;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
 import javax.swing.JList;
+import org.json.JSONException;
 
 /**
  * 25 Feb 2013
@@ -33,9 +37,17 @@ public class ItemList extends JList implements Observer {
      * @param CATEGORY passed by the category radio button action listener
      */
     public void changeModel(int CATEGORY) {
+        Item item = new Item(1317, 3840);
         switch (CATEGORY) {
             case Lenapj.ARMOR:
                 System.out.println("changeModel: Armor");
+        try {
+            item.setCurrentData();
+        } catch (IOException ex) {
+            Logger.getLogger(ItemList.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(ItemList.class.getName()).log(Level.SEVERE, null, ex);
+        }
                 break;
             case Lenapj.WEAPONS:
                 System.out.println("changeModel: Weapons");

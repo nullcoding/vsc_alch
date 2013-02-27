@@ -392,20 +392,20 @@ public class Lenapj extends JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AboutButton;
     private javax.swing.JTextField AlchAmount;
-    private javax.swing.JTextField AlchValue;
+    public javax.swing.JTextField AlchValue;
     private javax.swing.JRadioButton ArmorButton;
     private javax.swing.JRadioButton BuyEssButton;
-    private javax.swing.JTextField BuyLimit;
+    public javax.swing.JTextField BuyLimit;
     private javax.swing.JRadioButton BuyNatButton;
     private javax.swing.JButton CalcTotalButton;
     private javax.swing.JRadioButton DhideButton;
     private javax.swing.JRadioButton DontCareButton;
-    private javax.swing.JTextField EssPrice;
-    private javax.swing.JTextField GEPrice;
+    public javax.swing.JTextField EssPrice;
+    public javax.swing.JTextField GEPrice;
     private javax.swing.JScrollPane ListPane;
-    private javax.swing.JTextField NatPrice;
+    public javax.swing.JTextField NatPrice;
     private javax.swing.JRadioButton OtherButton;
-    private javax.swing.JTextField Profit;
+    public javax.swing.JTextField Profit;
     private javax.swing.JSlider RatingBar;
     private javax.swing.JLabel RatingLabel;
     private javax.swing.JTextArea Results;

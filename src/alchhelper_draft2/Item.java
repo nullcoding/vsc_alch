@@ -1,8 +1,7 @@
 package alchhelper_draft2;
 
 import java.io.IOException;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 
 /**
  * A general class for creating instances of items (essentially just objects)
@@ -45,10 +44,14 @@ public class Item {
 
     public void setCurrentData() throws IOException, JSONException {
         JSONReader rd = new JSONReader();
-        String url = "http://services.runescape.com/m=itemdb_rs/api/graph/"+itemdb+".json";
+        String url = "http://services.runescape.com/m=itemdb_rs/api/graph/" + itemdb + ".json";
         JSONObject json = rd.readJsonFromUrl(url);
-        System.out.println(json.toString());
-        System.out.println(json.get("id"));
-        System.out.println(json.length());
+        JSONObject jd = json.getJSONObject("daily");
+        JSONArray ja = new JSONArray(jd.keySet());
+        String latestdaystring = (ja.get(ja.length() - 1).toString());
+        System.out.println(latestdaystring); // string key value of latest day's data
+        int latestprice = jd.getInt(latestdaystring);
+        System.out.println(latestprice); // int value of latest price!
+        this.geprice = latestprice;
     }
 }
