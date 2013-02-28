@@ -24,11 +24,21 @@ public class ItemList extends JList implements Observer {
 
     public ArrayList<Item> listmodel;
     public int category;
+    public InputFileReader reader;
+    private AbstractModelExtension ame;
 
     public ItemList(int category) {
-        this.setBorder(javax.swing.BorderFactory.createTitledBorder("Items"));
-        this.category = category;
-        changeModel(category);
+        try {
+            reader = new InputFileReader();
+            reader.readIntoItem();
+            this.setBorder(javax.swing.BorderFactory.createTitledBorder("Items"));
+            this.category = category;
+            changeModel(category);
+        } catch (JSONException ex) {
+            Logger.getLogger(ItemList.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ItemList.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -37,30 +47,66 @@ public class ItemList extends JList implements Observer {
      * @param CATEGORY passed by the category radio button action listener
      */
     public void changeModel(int CATEGORY) {
-        Item item = new Item(1317, 3840);
         switch (CATEGORY) {
             case Lenapj.ARMOR:
                 System.out.println("changeModel: Armor");
-        try {
-            item.setCurrentData();
-        } catch (IOException ex) {
-            Logger.getLogger(ItemList.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
-            Logger.getLogger(ItemList.class.getName()).log(Level.SEVERE, null, ex);
-        }
+                //setArmorModel();
+                this.setModel(new AbstractModelExtension(reader.getArmorListModel()));
+                this.repaint();
                 break;
             case Lenapj.WEAPONS:
+                setWeaponsModel();
                 System.out.println("changeModel: Weapons");
                 break;
             case Lenapj.DHIDE:
+                setDhideModel();
                 System.out.println("changeModel: D'hide");
                 break;
             case Lenapj.OTHER:
+                setOtherModel();
                 System.out.println("changeModel: Other");
                 break;
-
         }
+    }
 
+    private void setArmorModel() {
+        listmodel = reader.getArmorListModel();
+        ame = new AbstractModelExtension(listmodel.size());
+        for (int i = 0; i < listmodel.size(); i++) {
+            ame.strings[i] = listmodel.get(i).getName();
+        }
+        this.setModel(ame);
+        this.repaint();
+    }
+
+    private void setWeaponsModel() {
+        listmodel = reader.getWeaponsListModel();
+        ame = new AbstractModelExtension(listmodel.size());
+        for (int i = 0; i < listmodel.size(); i++) {
+            ame.strings[i] = listmodel.get(i).getName();
+        }
+        this.setModel(ame);
+        this.repaint();
+    }
+
+    private void setDhideModel() {
+        listmodel = reader.getDhideListModel();
+        ame = new AbstractModelExtension(listmodel.size());
+        for (int i = 0; i < listmodel.size(); i++) {
+            ame.strings[i] = listmodel.get(i).getName();
+        }
+        this.setModel(ame);
+        this.repaint();
+    }
+
+    private void setOtherModel() {
+        listmodel = reader.getOtherListModel();
+        ame = new AbstractModelExtension(listmodel.size());
+        for (int i = 0; i < listmodel.size(); i++) {
+            ame.strings[i] = listmodel.get(i).getName();
+        }
+        this.setModel(ame);
+        this.repaint();
     }
 
     /**
@@ -89,29 +135,21 @@ public class ItemList extends JList implements Observer {
 
         }
 
+        public AbstractModelExtension(ArrayList<Item> al) {
+            strings = new String[al.size() + 1];
+            for (int i = 0; i < al.size(); i++) {
+                strings[i] = al.get(i).getName();
+            }
+        }
+
         @Override
         public int getSize() {
             return strings.length;
         }
 
         @Override
-        public Object getElementAt(int i) {
+        public String getElementAt(int i) {
             return strings[i];
         }
     }
 }
-//for reference only beyond this point
-
-/*
- *         this.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
-
-            public int getSize() {
-                return strings.length;
-            }
-
-            public Object getElementAt(int i) {
-                return strings[i];
-            }
-        });
- */

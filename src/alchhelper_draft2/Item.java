@@ -14,7 +14,7 @@ public class Item {
 
     public String name;
     public long alchvalue, geprice;
-    public int itemdb;
+    public int itemdb, category;
 
     /**
      * Constructs a new Item instance given a database ID in the RuneScape Grand
@@ -28,6 +28,20 @@ public class Item {
     public Item(int databasenumber, long alchvalue) {
         this.itemdb = databasenumber;
         this.alchvalue = alchvalue;
+    }
+    
+    /**
+     * Constructs an Item instance given a JSONObject containing keys
+     * for name, database ID, alch value, and category; current price comes
+     * later.
+     * @param o a JSONObject representing a single item 
+     * @param category passed by the initializer
+     */
+    public Item(JSONObject o, int category) {
+        this.name = o.getString("itemName");
+        this.alchvalue = o.getInt("alchValue");
+        this.itemdb = o.getInt("itemID");
+        this.category = category;
     }
 
     public long getAlchValue() {

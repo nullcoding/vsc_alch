@@ -1,6 +1,9 @@
 package alchhelper_draft2;
 
+import java.io.IOException;
 import java.util.Observable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 
@@ -19,7 +22,10 @@ public class Lenapj extends JPanel {
     public static final int BUY_ESSENCE = 5;
     public static final int APATHETIC = 6;
     public int CURRENT_CATEGORY = 0;
+    public int NATURE_STATUS = 6;
     private CategoryButtonsObservable cbo;
+    private NatureButtonsObservable nbo;
+    private NatureRuneHelper nrh;
     private ItemList ListDisplay;
 
     /**
@@ -33,10 +39,23 @@ public class Lenapj extends JPanel {
         initGroups();
 
         ArmorButton.setSelected(true);
+        DontCareButton.setSelected(true);
         cbo = new CategoryButtonsObservable();
+        nbo = new NatureButtonsObservable();
+
         ListDisplay = new ItemList(CURRENT_CATEGORY);
         ListPane.setViewportView(ListDisplay);
+
         cbo.addObserver(ListDisplay);
+
+        nrh = new NatureRuneHelper();
+
+        try {
+            this.NatPrice.setText(String.valueOf(nrh.getNatPrice()));
+            this.EssPrice.setText(String.valueOf(nrh.getEssPrice()));
+        } catch (IOException ex) {
+            Logger.getLogger(Lenapj.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initGroups() {
@@ -379,15 +398,15 @@ public class Lenapj extends JPanel {
     }//GEN-LAST:event_DhideButtonActionPerformed
 
     private void BuyNatButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuyNatButtonActionPerformed
-        // TODO add your handling code here:
+        nbo.setNatureStatus(BUY_NATURES);
     }//GEN-LAST:event_BuyNatButtonActionPerformed
 
     private void BuyEssButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuyEssButtonActionPerformed
-        // TODO add your handling code here:
+        nbo.setNatureStatus(BUY_ESSENCE);
     }//GEN-LAST:event_BuyEssButtonActionPerformed
 
     private void DontCareButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DontCareButtonActionPerformed
-        // TODO add your handling code here:
+        nbo.setNatureStatus(APATHETIC);
     }//GEN-LAST:event_DontCareButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AboutButton;
@@ -431,7 +450,7 @@ public class Lenapj extends JPanel {
         int categoryselected;
 
         public CategoryButtonsObservable() {
-            System.out.println("Category Buttons Observable created.");
+            //System.out.println("Category Buttons Observable created.");
         }
 
         public void setCategory(int category) {
@@ -440,6 +459,18 @@ public class Lenapj extends JPanel {
             setChanged();
             notifyObservers();
             ListDisplay.changeModel(categoryselected);
+        }
+    }
+
+    class NatureButtonsObservable extends Observable {
+
+        public NatureButtonsObservable() {
+        }
+
+        public void setNatureStatus(int status) {
+            NATURE_STATUS = status;
+            setChanged();
+            notifyObservers();
         }
     }
 }
