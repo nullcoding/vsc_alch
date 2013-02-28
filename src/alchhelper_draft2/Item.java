@@ -1,6 +1,8 @@
 package alchhelper_draft2;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.*;
 
 /**
@@ -28,6 +30,13 @@ public class Item {
     public Item(int databasenumber, long alchvalue) {
         this.itemdb = databasenumber;
         this.alchvalue = alchvalue;
+      /*  try {
+            setCurrentData();
+        } catch (IOException ex) {
+            Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
     }
     
     /**
@@ -41,6 +50,7 @@ public class Item {
         this.name = o.getString("itemName");
         this.alchvalue = o.getInt("alchValue");
         this.itemdb = o.getInt("itemID");
+        this.geprice = o.getInt("gePrice");
         this.category = category;
     }
 
@@ -56,7 +66,7 @@ public class Item {
         return name;
     }
 
-    public void setCurrentData() throws IOException, JSONException {
+    private void setCurrentData() throws IOException, JSONException {
         JSONReader rd = new JSONReader();
         String url = "http://services.runescape.com/m=itemdb_rs/api/graph/" + itemdb + ".json";
         JSONObject json = rd.readJsonFromUrl(url);

@@ -2,6 +2,8 @@ package alchhelper_draft2;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.*;
 
 /**
@@ -84,14 +86,34 @@ public class InputFileReader {
         return 0;
     }
 
+    public int setCurrentGEPrice(JSONObject o) {
+        try {
+            int itemID = o.getInt("itemID");
+            String url = "http://services.runescape.com/m=itemdb_rs/api/graph/" + itemID + ".json";
+            JSONObject json = JSONReader.readJsonFromUrl(url);
+            JSONObject jd = json.getJSONObject("daily");
+            JSONArray ja2 = new JSONArray(jd.keySet());
+            String latestdaystring = (ja2.get(ja2.length() - 1).toString());
+            System.out.println(latestdaystring); // string key value of latest day's data
+            int latestprice = jd.getInt(latestdaystring);
+            System.out.println(latestprice); // int value of latest price!
+            return latestprice;
+        } catch (IOException ex) {
+            Logger.getLogger(InputFileReader.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(InputFileReader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
     public void readIntoItem() throws JSONException, IOException {
-        String url = "http://127.0.0.1/~jaska/vsc_alch/items_27213_0108.json";
+        String url = "http://127.0.0.1/~jaska/vsc_alch/items_28213_0012.json";
         String rawText = JSONReader.returnUrlText(url);
         ja = new JSONArray(rawText);
         System.out.println(ja.length() + " items currently in the master list - loaded!");
         LIST_TOTAL = ja.length() - 1;
         System.out.println(ja.getJSONObject(0).keySet());
-        // key set is [id, itemName, itemID, alchValue, itemCategory] just for the record.
+        // key set is [id, gePrice, itemName, itemID, alchValue, alchProfit, itemCategory] just for the record.
 
     }
 
@@ -100,6 +122,8 @@ public class InputFileReader {
         for (int i = 0; i < LIST_TOTAL; i++) {
             JSONObject o = ja.getJSONObject(i);
             if (o.getString("itemCategory").equalsIgnoreCase("ARMOR")) {
+                int c = setCurrentGEPrice(o);
+                o.put("gePrice", c);
                 al.add(new Item(o, Lenapj.ARMOR));
             }
         }
@@ -113,6 +137,8 @@ public class InputFileReader {
         for (int i = 0; i < LIST_TOTAL; i++) {
             JSONObject o = ja.getJSONObject(i);
             if (o.getString("itemCategory").equalsIgnoreCase("WEAPONS")) {
+                int c = setCurrentGEPrice(o);
+                o.put("gePrice", c);
                 al.add(new Item(o, Lenapj.WEAPONS));
             }
         }
@@ -126,6 +152,8 @@ public class InputFileReader {
         for (int i = 0; i < LIST_TOTAL; i++) {
             JSONObject o = ja.getJSONObject(i);
             if (o.getString("itemCategory").equalsIgnoreCase("DHIDE")) {
+                int c = setCurrentGEPrice(o);
+                o.put("gePrice", c);
                 al.add(new Item(o, Lenapj.DHIDE));
             }
         }
@@ -139,6 +167,8 @@ public class InputFileReader {
         for (int i = 0; i < LIST_TOTAL; i++) {
             JSONObject o = ja.getJSONObject(i);
             if (o.getString("itemCategory").equalsIgnoreCase("OTHER")) {
+                int c = setCurrentGEPrice(o);
+                o.put("gePrice", c);
                 al.add(new Item(o, Lenapj.OTHER));
             }
         }

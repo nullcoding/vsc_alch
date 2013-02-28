@@ -8,6 +8,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
 import javax.swing.JList;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import org.json.JSONException;
 
 /**
@@ -26,8 +29,10 @@ public class ItemList extends JList implements Observer {
     public int category;
     public InputFileReader reader;
     private AbstractModelExtension ame;
+    private Lenapj mw;
 
-    public ItemList(int category) {
+    public ItemList(int category, Lenapj mw) {
+        this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         try {
             reader = new InputFileReader();
             reader.readIntoItem();
@@ -39,6 +44,8 @@ public class ItemList extends JList implements Observer {
         } catch (IOException ex) {
             Logger.getLogger(ItemList.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.mw = mw;
+        this.addListSelectionListener(new ItemListener(this));
     }
 
     /**
@@ -50,63 +57,48 @@ public class ItemList extends JList implements Observer {
         switch (CATEGORY) {
             case Lenapj.ARMOR:
                 System.out.println("changeModel: Armor");
-                //setArmorModel();
-                this.setModel(new AbstractModelExtension(reader.getArmorListModel()));
+                ame = null;
+                ame = new AbstractModelExtension(reader.getArmorListModel());
+                this.setModel(ame);
                 this.repaint();
                 break;
             case Lenapj.WEAPONS:
-                setWeaponsModel();
                 System.out.println("changeModel: Weapons");
+                ame = null;
+                ame = new AbstractModelExtension(reader.getWeaponsListModel());
+                this.setModel(ame);
+                this.repaint();
                 break;
             case Lenapj.DHIDE:
-                setDhideModel();
                 System.out.println("changeModel: D'hide");
+                ame = null;
+                ame = new AbstractModelExtension(reader.getDhideListModel());
+                this.setModel(ame);
+                this.repaint();
                 break;
             case Lenapj.OTHER:
-                setOtherModel();
                 System.out.println("changeModel: Other");
+                ame = null;
+                ame = new AbstractModelExtension(reader.getOtherListModel());
+                this.setModel(ame);
+                this.repaint();
                 break;
         }
     }
 
-    private void setArmorModel() {
-        listmodel = reader.getArmorListModel();
-        ame = new AbstractModelExtension(listmodel.size());
-        for (int i = 0; i < listmodel.size(); i++) {
-            ame.strings[i] = listmodel.get(i).getName();
-        }
-        this.setModel(ame);
-        this.repaint();
-    }
-
-    private void setWeaponsModel() {
-        listmodel = reader.getWeaponsListModel();
-        ame = new AbstractModelExtension(listmodel.size());
-        for (int i = 0; i < listmodel.size(); i++) {
-            ame.strings[i] = listmodel.get(i).getName();
-        }
-        this.setModel(ame);
-        this.repaint();
-    }
-
-    private void setDhideModel() {
-        listmodel = reader.getDhideListModel();
-        ame = new AbstractModelExtension(listmodel.size());
-        for (int i = 0; i < listmodel.size(); i++) {
-            ame.strings[i] = listmodel.get(i).getName();
-        }
-        this.setModel(ame);
-        this.repaint();
-    }
-
-    private void setOtherModel() {
-        listmodel = reader.getOtherListModel();
-        ame = new AbstractModelExtension(listmodel.size());
-        for (int i = 0; i < listmodel.size(); i++) {
-            ame.strings[i] = listmodel.get(i).getName();
-        }
-        this.setModel(ame);
-        this.repaint();
+    /**
+     * sent by the list data listener (valueChanged()) with instructions to load
+     * the selected item's information instead!
+     *
+     * @param index passed by the LSE
+     */
+    public void fillFields(int index) {
+        Item newItem = ame.getItemAt(index);
+        System.out.println(newItem.name + " itemID is: " + newItem.itemdb + " and current GE Price is: " + newItem.geprice);
+        mw.AlchValue.setText(String.valueOf(newItem.getAlchValue()));
+        mw.GEPrice.setText(String.valueOf(newItem.getGEPrice()));
+        mw.AlchValue.repaint();
+        mw.GEPrice.repaint();
     }
 
     /**
@@ -129,6 +121,7 @@ public class ItemList extends JList implements Observer {
     class AbstractModelExtension extends AbstractListModel {
 
         public String[] strings;
+        private ArrayList<Item> pl;
 
         public AbstractModelExtension(int length) {
             strings = new String[length + 1];
@@ -136,6 +129,7 @@ public class ItemList extends JList implements Observer {
         }
 
         public AbstractModelExtension(ArrayList<Item> al) {
+            this.pl = al;
             strings = new String[al.size() + 1];
             for (int i = 0; i < al.size(); i++) {
                 strings[i] = al.get(i).getName();
@@ -150,6 +144,24 @@ public class ItemList extends JList implements Observer {
         @Override
         public String getElementAt(int i) {
             return strings[i];
+        }
+
+        public Item getItemAt(int i) {
+            return pl.get(i);
+        }
+    }
+
+    class ItemListener implements ListSelectionListener {
+
+        private ItemList il;
+
+        public ItemListener(ItemList il) {
+            this.il = il;
+        }
+
+        @Override
+        public void valueChanged(ListSelectionEvent lse) {
+            il.fillFields(il.getSelectedIndex());
         }
     }
 }

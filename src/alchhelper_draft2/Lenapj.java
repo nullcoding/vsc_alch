@@ -43,7 +43,7 @@ public class Lenapj extends JPanel {
         cbo = new CategoryButtonsObservable();
         nbo = new NatureButtonsObservable();
 
-        ListDisplay = new ItemList(CURRENT_CATEGORY);
+        ListDisplay = new ItemList(CURRENT_CATEGORY, this);
         ListPane.setViewportView(ListDisplay);
 
         cbo.addObserver(ListDisplay);
